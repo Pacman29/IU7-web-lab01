@@ -1,6 +1,5 @@
-package task_options;
+package ru.web;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -12,12 +11,18 @@ public class Request {
     private String body;
     private String error;
     private String url;
+    private int state;
 
-    public String getHead() throws JsonProcessingException {
+    public String getHead() {
         if(head != null) {
             ObjectMapper mapper = new ObjectMapper();
             mapper.getSerializerProvider().setNullKeySerializer(new MyNullSerializer());
-            return mapper.writeValueAsString(head);
+            try {
+                return mapper.writeValueAsString(head);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                return "ERROR";
+            }
 
         } else {
             return null;
@@ -36,11 +41,12 @@ public class Request {
         return url;
     }
 
-    public Request(String url, Map<String, List<String>> head, String body, String error) {
+    public Request(String url, int state, Map<String, List<String>> head, String body, String error) {
         this.head = head;
         this.body = body;
         this.error = error;
         this.url = url;
+        this.state = state;
     }
 
     public void print() throws JsonProcessingException {
@@ -54,5 +60,9 @@ public class Request {
         if(error != null){
             System.out.println("error: \n" + this.error + "\n");
         }
+    }
+
+    public int getState() {
+        return state;
     }
 }
